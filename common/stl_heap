@@ -1,0 +1,82 @@
+#include <iostream>
+using std::cout;
+using std::endl;
+
+#include <algorithm>
+#include <vector>
+#include <iterator>
+
+int main()
+{
+   int a[ 10 ] = { 3, 100, 52, 77, 22, 31, 1, 98, 13, 40 };
+   std::vector< int > v( a, a + 10 ); // copy of a
+   std::vector< int > v2;
+   std::ostream_iterator< int > output( cout, " " );
+
+   std::copy( v.begin(), v.end(), output );
+   std::make_heap( v.begin(), v.end() );
+   std::sort_heap( v.begin(), v.end() );
+   cout << "\n\n";
+   std::copy( v.begin(), v.end(), output );
+
+
+   cout << endl;
+   return 0;
+}
+
+////////////////////////////////// User defined Type Example uses "functor"
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+struct doc {
+    double rank;
+    explicit doc(double r) : rank(r) {}
+};
+
+struct doc_rank_greater_than {
+    bool operator()(doc const& a, doc const& b) const {
+        return a.rank > b.rank;
+    }
+};
+
+int main() {
+    std::vector<doc> docvec;
+    docvec.push_back( doc(4) );
+    docvec.push_back( doc(3) );
+    docvec.push_back( doc(2) );
+    docvec.push_back( doc(1) );
+    std::make_heap(docvec.begin(),docvec.end(),doc_rank_greater_than());
+    std::cout << docvec.front().rank << '\n';
+}
+
+/////////////////////////////////////// priority_queue
+
+#include <functional> // definition of less
+#include <queue>  // definition of priority_queue
+#include <iostream>
+
+using namespace std;
+
+struct Task
+{
+        int priority;
+        friend bool operator < (const Task& t1, const Task& t2);
+        Task(int p=0) : priority(p) {}
+};
+
+bool operator < (const Task& t1, const Task& t2)
+{
+        return t1.priority < t2.priority;
+}
+
+int main()
+{
+        priority_queue<Task> scheduler;
+        scheduler.push(Task(3));
+        scheduler.push(Task(5));
+        scheduler.push(Task(1));
+        scheduler.push(Task(1));
+        cout<< scheduler.top().priority <<endl;   // output 5
+        return 0;
+}
